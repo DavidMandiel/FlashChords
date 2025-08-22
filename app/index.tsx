@@ -6,6 +6,8 @@ import {
   StatusBar,
   SafeAreaView,
   Text,
+  TouchableOpacity,
+  Platform,
 } from 'react-native';
 import { useMetronome } from '../src/hooks/useMetronome';
 import { useChordDrill } from '../src/hooks/useChordDrill';
@@ -13,17 +15,18 @@ import { ChordDisplay } from '../src/components/ChordDisplay';
 import { MetronomeControls } from '../src/components/MetronomeControls';
 import { ChordQualitySelector } from '../src/components/ChordQualitySelector';
 import { storageUtils } from '../src/utils/storage';
-import { TimeSignature } from '../src/types';
+import { TimeSignature, ChordProgressionMode } from '../src/types';
 
 export default function App() {
   // Chord drill state
   const {
     currentChord,
+    nextChord,
     chordPool,
     isChordPoolValid,
     generateNextChord,
     toggleChordQuality,
-    setUseFlats,
+    setProgressionMode,
     resetChord,
   } = useChordDrill();
 
@@ -110,15 +113,9 @@ export default function App() {
     }
   }, [isPlaying, startMetronome, stopMetronome]);
 
-  const handleNext = useCallback(() => {
-    generateNextChord();
-  }, [generateNextChord]);
 
-  const handleReset = useCallback(() => {
-    stopMetronome();
-    resetMetronome();
-    resetChord();
-  }, [stopMetronome, resetMetronome, resetChord]);
+
+
 
   const handleBpmChange = useCallback((newBpm: number) => {
     setBpm(newBpm);
@@ -138,35 +135,27 @@ export default function App() {
     setNextChordEveryBeats(beats);
   }, []);
 
-  const handleCountInToggle = useCallback(() => {
-    console.log('Count-in toggle pressed, current state:', countInEnabled);
-    setCountInEnabled(prev => {
-      const newState = !prev;
-      console.log('Count-in state changing to:', newState);
-      return newState;
-    });
-  }, [countInEnabled]);
+     const handleCountInToggle = useCallback(() => {
+     setCountInEnabled(prev => !prev);
+   }, []);
 
   const handleToggleQuality = useCallback((quality: string) => {
     toggleChordQuality(quality as any);
   }, [toggleChordQuality]);
 
-  const handleToggleFlats = useCallback(() => {
-    setUseFlats(prev => !prev);
-  }, [setUseFlats]);
+  const handleSetProgressionMode = useCallback((mode: ChordProgressionMode) => {
+    setProgressionMode(mode);
+  }, [setProgressionMode]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#000000" />
       
-      <ScrollView 
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
+      <View style={styles.mainContainer}>
         {/* Chord Display */}
         <ChordDisplay
           chord={currentChord}
+          nextChord={nextChord}
           isPulsing={isPulsing}
           isAccent={isAccent}
         />
@@ -176,7 +165,7 @@ export default function App() {
           <View style={styles.countInOverlay}>
             <View style={styles.countInBox}>
               <Text style={styles.countInText}>
-                {4 - countInBeat}
+                {5 - countInBeat}
               </Text>
             </View>
           </View>
@@ -194,8 +183,6 @@ export default function App() {
           onCountInToggle={handleCountInToggle}
           isPlaying={isPlaying}
           onStartStop={handleStartStop}
-          onNext={handleNext}
-          onReset={handleReset}
           isChordPoolValid={isChordPoolValid}
           isInCountIn={isInCountIn}
           countInBeat={countInBeat}
@@ -205,11 +192,28 @@ export default function App() {
         <ChordQualitySelector
           enabledQualities={chordPool.enabledQualities}
           onToggleQuality={handleToggleQuality}
-          useFlats={chordPool.useFlats}
-          onToggleFlats={handleToggleFlats}
+          progressionMode={chordPool.progressionMode}
+          onSetProgressionMode={handleSetProgressionMode}
         />
-      </ScrollView>
-    </SafeAreaView>
+
+        {/* Start/Stop Button */}
+        <View style={styles.startStopContainer}>
+          <TouchableOpacity
+            style={[
+              styles.startStopButton,
+              isPlaying ? styles.stopButton : styles.startButton,
+              !isChordPoolValid && styles.disabledButton,
+            ]}
+            onPress={handleStartStop}
+            disabled={!isChordPoolValid}
+          >
+            <Text style={styles.startStopButtonText}>
+              {isPlaying ? 'Stop' : 'Start'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View>
   );
 }
 
@@ -217,12 +221,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#000000',
+    width: '100%',
+    height: '100%',
+    overflow: 'hidden',
   },
-  scrollView: {
+  mainContainer: {
     flex: 1,
-  },
-  scrollContent: {
-    paddingBottom: 20,
+    justifyContent: 'center',
+    paddingVertical: 2,
+    paddingHorizontal: 8,
+    alignItems: 'center',
+    maxHeight: '100%',
+    minHeight: 0,
+    width: '100%',
+    overflow: 'hidden',
   },
   countInContainer: {
     alignItems: 'center',
@@ -235,7 +247,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#4CAF50',
     textAlign: 'center',
-    textShadow: '0 0 15px rgba(76, 175, 80, 0.8)',
+    textAlignVertical: 'center',
+    lineHeight: 150,
+    textShadowColor: 'rgba(76, 175, 80, 0.8)',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 15,
   },
   countInOverlay: {
     position: 'absolute',
@@ -254,6 +270,41 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 3,
     borderColor: '#4CAF50',
-    boxShadow: '0 0 20px rgba(76, 175, 80, 0.5)',
+    shadowColor: 'rgba(76, 175, 80, 0.5)',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 1,
+    shadowRadius: 20,
+    elevation: 10,
+  },
+  startStopContainer: {
+    alignItems: 'center',
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    marginBottom: 5,
+    width: '90%',
+    maxWidth: 350,
+  },
+  startStopButton: {
+    paddingHorizontal: 25,
+    paddingVertical: 10,
+    borderRadius: 10,
+    minWidth: 90,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  startButton: {
+    backgroundColor: '#4CAF50',
+  },
+  stopButton: {
+    backgroundColor: '#FF4444',
+  },
+  disabledButton: {
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    opacity: 0.5,
+  },
+  startStopButtonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
   },
 });

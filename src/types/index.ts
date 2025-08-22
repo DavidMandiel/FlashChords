@@ -1,6 +1,6 @@
 export type ChordQuality = 'major' | 'minor' | '7th' | '5th' | 'diminished';
 
-export type ChordRoot = 'A' | 'A#' | 'B' | 'C' | 'C#' | 'D' | 'D#' | 'E' | 'F' | 'F#' | 'G' | 'G#';
+export type ChordRoot = 'A' | 'A#' | 'B' | 'C' | 'C#' | 'D' | 'D#' | 'E' | 'F' | 'F#' | 'G' | 'G#' | 'Bb' | 'Eb' | 'Ab' | 'Db' | 'Gb';
 
 export type FlatRoot = 'A' | 'Bb' | 'B' | 'C' | 'Db' | 'D' | 'Eb' | 'E' | 'F' | 'Gb' | 'G' | 'Ab';
 
@@ -21,9 +21,11 @@ export interface MetronomeState {
   countInEnabled: boolean;
 }
 
+export type ChordProgressionMode = 'random' | 'circle_of_fifths' | 'circle_of_fourths';
+
 export interface ChordPoolSettings {
   enabledQualities: ChordQuality[];
-  useFlats: boolean;
+  progressionMode: ChordProgressionMode;
 }
 
 export interface AppSettings {

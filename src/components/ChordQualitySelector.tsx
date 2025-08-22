@@ -6,13 +6,13 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import { ChordQuality } from '../types';
+import { ChordQuality, ChordProgressionMode } from '../types';
 
 interface ChordQualitySelectorProps {
   enabledQualities: ChordQuality[];
   onToggleQuality: (quality: ChordQuality) => void;
-  useFlats: boolean;
-  onToggleFlats: () => void;
+  progressionMode: ChordProgressionMode;
+  onSetProgressionMode: (mode: ChordProgressionMode) => void;
 }
 
 const CHORD_QUALITIES: { quality: ChordQuality; label: string; symbol: string }[] = [
@@ -26,8 +26,8 @@ const CHORD_QUALITIES: { quality: ChordQuality; label: string; symbol: string }[
 export function ChordQualitySelector({
   enabledQualities,
   onToggleQuality,
-  useFlats,
-  onToggleFlats,
+  progressionMode,
+  onSetProgressionMode,
 }: ChordQualitySelectorProps) {
   return (
     <View style={styles.container}>
@@ -63,35 +63,50 @@ export function ChordQualitySelector({
       </View>
 
       <View style={styles.flatsToggleContainer}>
-        <Text style={styles.flatsLabel}>Note Names:</Text>
+        <Text style={styles.flatsLabel}>Chord Progression:</Text>
         <View style={styles.toggleGroup}>
           <TouchableOpacity
             style={[
               styles.toggleButton,
-              !useFlats && styles.toggleButtonActive,
+              progressionMode === 'random' && styles.toggleButtonActive,
             ]}
-            onPress={() => !useFlats || onToggleFlats()}
+            onPress={() => onSetProgressionMode('random')}
           >
             <Text style={[
               styles.toggleText,
-              !useFlats && styles.toggleTextActive,
+              progressionMode === 'random' && styles.toggleTextActive,
             ]}>
-              Sharps ♯
+              Random
             </Text>
           </TouchableOpacity>
           
           <TouchableOpacity
             style={[
               styles.toggleButton,
-              useFlats && styles.toggleButtonActive,
+              progressionMode === 'circle_of_fifths' && styles.toggleButtonActive,
             ]}
-            onPress={() => useFlats || onToggleFlats()}
+            onPress={() => onSetProgressionMode('circle_of_fifths')}
           >
             <Text style={[
               styles.toggleText,
-              useFlats && styles.toggleTextActive,
+              progressionMode === 'circle_of_fifths' && styles.toggleTextActive,
             ]}>
-              Flats ♭
+              Circle 5th
+            </Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity
+            style={[
+              styles.toggleButton,
+              progressionMode === 'circle_of_fourths' && styles.toggleButtonActive,
+            ]}
+            onPress={() => onSetProgressionMode('circle_of_fourths')}
+          >
+            <Text style={[
+              styles.toggleText,
+              progressionMode === 'circle_of_fourths' && styles.toggleTextActive,
+            ]}>
+              Circle 4th
             </Text>
           </TouchableOpacity>
         </View>
@@ -108,33 +123,36 @@ export function ChordQualitySelector({
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    padding: 6,
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
-    borderRadius: 15,
-    margin: 10,
+    borderRadius: 12,
+    margin: 1,
+    marginTop: 0,
+    width: '90%',
+    maxWidth: 350,
   },
   title: {
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: 'bold',
     color: '#FFFFFF',
     textAlign: 'center',
-    marginBottom: 20,
+    marginBottom: 5,
   },
   qualitiesContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
-    gap: 10,
-    marginBottom: 20,
+    gap: 4,
+    marginBottom: 5,
   },
   qualityButton: {
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
     borderWidth: 2,
     borderColor: 'rgba(255, 255, 255, 0.3)',
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    minWidth: 80,
+    borderRadius: 6,
+    paddingHorizontal: 5,
+    paddingVertical: 3,
+    minWidth: 45,
     alignItems: 'center',
   },
   qualityButtonActive: {
@@ -142,7 +160,7 @@ const styles = StyleSheet.create({
     borderColor: '#4CAF50',
   },
   qualityLabel: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '600',
     color: 'rgba(255, 255, 255, 0.8)',
   },
@@ -150,9 +168,9 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   qualitySymbol: {
-    fontSize: 12,
+    fontSize: 10,
     color: 'rgba(255, 255, 255, 0.6)',
-    marginTop: 2,
+    marginTop: 1,
   },
   qualitySymbolActive: {
     color: 'rgba(255, 255, 255, 0.9)',

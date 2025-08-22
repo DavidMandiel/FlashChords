@@ -1,7 +1,16 @@
-import { Chord, ChordQuality, ChordRoot, FlatRoot } from '../types';
+import { Chord, ChordQuality, ChordRoot, FlatRoot, ChordProgressionMode } from '../types';
 
-const SHARP_ROOTS: ChordRoot[] = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
+const SHARP_ROOTS: ChordRoot[] = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'Bb', 'Eb', 'Ab', 'Db', 'Gb'];
 const FLAT_ROOTS: FlatRoot[] = ['A', 'Bb', 'B', 'C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab'];
+
+// Circle of Fifths progression (ascending fifths)
+const CIRCLE_OF_FIFTHS: ChordRoot[] = ['C', 'G', 'D', 'A', 'E', 'B', 'F#', 'C#', 'G#', 'D#', 'A#', 'F'];
+
+// Circle of Fourths progression (ascending fourths = descending fifths)
+const CIRCLE_OF_FOURTHS: ChordRoot[] = ['C', 'F', 'A#', 'D#', 'G#', 'C#', 'F#', 'B', 'E', 'A', 'D', 'G'];
+
+// Random progression (sequential through all chords)
+const RANDOM_PROGRESSION: ChordRoot[] = ['C', 'G', 'D', 'A', 'E', 'B', 'F', 'F#', 'C#', 'G#', 'D#', 'A#', 'Bb', 'Eb', 'Ab', 'Db', 'Gb'];
 
 const SHARP_TO_FLAT: Record<ChordRoot, FlatRoot> = {
   'A': 'A',
@@ -49,41 +58,45 @@ export function convertFlatToSharp(root: FlatRoot): ChordRoot {
   return FLAT_TO_SHARP[root];
 }
 
-export function getChordDisplay(root: ChordRoot, quality: ChordQuality, useFlats: boolean): string {
+export function getChordDisplay(root: ChordRoot, quality: ChordQuality): string {
   const suffix = QUALITY_SUFFIXES[quality];
-  
-  if (useFlats) {
-    const flatRoot = convertSharpToFlat(root);
-    return `${flatRoot}${suffix}`;
-  }
-  
   return `${root}${suffix}`;
 }
 
+
+
 export function generateRandomChord(
   enabledQualities: ChordQuality[],
-  useFlats: boolean,
+  progressionMode: ChordProgressionMode,
   lastChord?: Chord
 ): Chord {
   if (enabledQualities.length === 0) {
     throw new Error('No chord qualities enabled');
   }
 
-  const availableRoots = useFlats ? FLAT_ROOTS : SHARP_ROOTS;
-  
   let newChord: Chord;
   let attempts = 0;
   const maxAttempts = 100;
 
   do {
-    const randomRoot = availableRoots[Math.floor(Math.random() * availableRoots.length)];
-    const randomQuality = enabledQualities[Math.floor(Math.random() * enabledQualities.length)];
+    let selectedRoot: ChordRoot;
     
-    const sharpRoot = useFlats ? convertFlatToSharp(randomRoot as FlatRoot) : randomRoot as ChordRoot;
-    const display = getChordDisplay(sharpRoot, randomQuality, useFlats);
+    if (progressionMode === 'circle_of_fifths') {
+      // Pick a random root from the circle of fifths
+      selectedRoot = CIRCLE_OF_FIFTHS[Math.floor(Math.random() * CIRCLE_OF_FIFTHS.length)];
+    } else if (progressionMode === 'circle_of_fourths') {
+      // Pick a random root from the circle of fourths
+      selectedRoot = CIRCLE_OF_FOURTHS[Math.floor(Math.random() * CIRCLE_OF_FOURTHS.length)];
+    } else {
+      // 'random' - pick randomly from the progression array
+      selectedRoot = RANDOM_PROGRESSION[Math.floor(Math.random() * RANDOM_PROGRESSION.length)];
+    }
+    
+    const randomQuality = enabledQualities[Math.floor(Math.random() * enabledQualities.length)];
+    const display = getChordDisplay(selectedRoot, randomQuality);
     
     newChord = {
-      root: sharpRoot,
+      root: selectedRoot,
       quality: randomQuality,
       display,
     };
@@ -99,6 +112,8 @@ export function generateRandomChord(
   return newChord;
 }
 
+
+
 export function getTimeSignatureBeats(timeSignature: string): number {
   const [numerator] = timeSignature.split('/').map(Number);
   return numerator;
@@ -110,8 +125,6 @@ export function getNextChordEveryOptions(timeSignature: string): number[] {
   
   if (beats >= 6) {
     options.push(6, 8);
-  } else if (beats >= 4) {
-    options.push(4);
   }
   
   return options;

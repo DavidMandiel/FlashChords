@@ -1,11 +1,11 @@
 import * as SecureStore from 'expo-secure-store';
 import { Platform } from 'react-native';
-import { AppSettings, ChordPoolSettings, MetronomeState, TimeSignature } from '../types';
+import { AppSettings, ChordPoolSettings, MetronomeState, TimeSignature, ChordProgressionMode } from '../types';
 
 const STORAGE_KEYS = {
   CHORD_POOL: 'chord_pool',
   METRONOME: 'metronome',
-  USE_FLATS: 'use_flats',
+  PROGRESSION_MODE: 'progression_mode',
   BPM: 'bpm',
   TIME_SIGNATURE: 'time_signature',
   NEXT_CHORD_EVERY: 'next_chord_every',
@@ -33,8 +33,7 @@ const setItem = async (key: string, value: string): Promise<void> => {
       await SecureStore.setItemAsync(key, value);
     }
   } catch {
-    // Fallback to console.log for debugging
-    console.log(`Failed to save ${key}: ${value}`);
+    // Silent fallback
   }
 };
 
@@ -42,17 +41,17 @@ export const storageUtils = {
   // Chord pool settings
   async getChordPoolSettings(): Promise<ChordPoolSettings> {
     const enabledQualities = await getItem(STORAGE_KEYS.CHORD_POOL);
-    const useFlats = await getItem(STORAGE_KEYS.USE_FLATS);
+    const progressionMode = await getItem(STORAGE_KEYS.PROGRESSION_MODE);
     
     return {
       enabledQualities: enabledQualities ? JSON.parse(enabledQualities) : ['major', 'minor'],
-      useFlats: useFlats === 'true',
+      progressionMode: (progressionMode as ChordProgressionMode) ?? 'random',
     };
   },
 
   async setChordPoolSettings(settings: ChordPoolSettings): Promise<void> {
     await setItem(STORAGE_KEYS.CHORD_POOL, JSON.stringify(settings.enabledQualities));
-    await setItem(STORAGE_KEYS.USE_FLATS, settings.useFlats.toString());
+    await setItem(STORAGE_KEYS.PROGRESSION_MODE, settings.progressionMode);
   },
 
   // Metronome settings
@@ -116,14 +115,7 @@ export const storageUtils = {
     await setItem(STORAGE_KEYS.TIME_SIGNATURE, timeSignature);
   },
 
-  async getUseFlats(): Promise<boolean> {
-    const useFlats = await getItem(STORAGE_KEYS.USE_FLATS);
-    return useFlats === 'true';
-  },
 
-  async setUseFlats(useFlats: boolean): Promise<void> {
-    await setItem(STORAGE_KEYS.USE_FLATS, useFlats.toString());
-  },
 
   async getNextChordEveryBeats(): Promise<number> {
     const beats = await getItem(STORAGE_KEYS.NEXT_CHORD_EVERY);

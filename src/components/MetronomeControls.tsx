@@ -22,8 +22,6 @@ interface MetronomeControlsProps {
   onCountInToggle: () => void;
   isPlaying: boolean;
   onStartStop: () => void;
-  onNext: () => void;
-  onReset: () => void;
   isChordPoolValid: boolean;
   isInCountIn: boolean;
   countInBeat: number;
@@ -104,8 +102,6 @@ export function MetronomeControls({
   onCountInToggle,
   isPlaying,
   onStartStop,
-  onNext,
-  onReset,
   isChordPoolValid,
   isInCountIn,
   countInBeat,
@@ -172,113 +168,82 @@ export function MetronomeControls({
         </TouchableOpacity>
       </View>
 
-      {/* Control Buttons */}
-      <View style={styles.controlsSection}>
-        <View style={styles.buttonRow}>
-          <TouchableOpacity
-            style={[
-              styles.controlButton,
-              styles.primaryButton,
-              !isChordPoolValid && styles.disabledButton,
-            ]}
-            onPress={onStartStop}
-            disabled={!isChordPoolValid}
-          >
-            <Text style={styles.primaryButtonText}>
-              {isPlaying ? 'Stop' : 'Start'}
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.controlButton, styles.secondaryButton]}
-            onPress={onNext}
-            disabled={!isChordPoolValid}
-          >
-            <Text style={styles.secondaryButtonText}>Next</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.controlButton, styles.secondaryButton]}
-            onPress={onReset}
-          >
-            <Text style={styles.secondaryButtonText}>Reset</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Count-in Display */}
-        {isInCountIn && (
-          <View style={styles.countInContainer}>
-            <Text style={styles.countInText}>
-              Count-in: {countInBeat + 1}/4
-            </Text>
-          </View>
-        )}
-
-        {/* Warning */}
-        {!isChordPoolValid && (
-          <Text style={styles.warningText}>
-            Please select at least one chord quality
+      {/* Count-in Display */}
+      {isInCountIn && (
+        <View style={styles.countInContainer}>
+          <Text style={styles.countInText}>
+            Count-in: {countInBeat + 1}/4
           </Text>
-        )}
-      </View>
+        </View>
+      )}
+
+      {/* Warning */}
+      {!isChordPoolValid && (
+        <Text style={styles.warningText}>
+          Please select at least one chord quality
+        </Text>
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    padding: 6,
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
-    borderRadius: 15,
-    margin: 10,
+    borderRadius: 12,
+    margin: 1,
+    marginBottom: 0,
+    width: '90%',
+    maxWidth: 350,
   },
   section: {
-    marginBottom: 20,
+    marginBottom: 3,
   },
   sectionTitle: {
-    fontSize: 16,
+    fontSize: 12,
     fontWeight: '600',
     color: '#FFFFFF',
-    marginBottom: 10,
+    marginBottom: 3,
     textAlign: 'center',
   },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 20,
+    marginBottom: 3,
   },
   halfSection: {
     flex: 1,
     marginHorizontal: 5,
   },
   bpmText: {
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: 'bold',
     color: '#FFFFFF',
     textAlign: 'center',
-    marginTop: 10,
+    marginTop: 3,
   },
   dropdownContainer: {
     position: 'relative',
   },
   dropdownButton: {
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: 8,
+    borderRadius: 6,
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.2)',
-    paddingHorizontal: 15,
-    paddingVertical: 12,
+    paddingHorizontal: 8,
+    paddingVertical: 6,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
   dropdownButtonText: {
     color: '#FFFFFF',
-    fontSize: 16,
+    fontSize: 13,
   },
   dropdownArrow: {
     color: '#FFFFFF',
-    fontSize: 12,
+    fontSize: 10,
   },
   modalOverlay: {
     flex: 1,
@@ -295,8 +260,8 @@ const styles = StyleSheet.create({
     maxHeight: 300,
   },
   dropdownItem: {
-    paddingHorizontal: 15,
-    paddingVertical: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(255, 255, 255, 0.1)',
   },
@@ -305,7 +270,7 @@ const styles = StyleSheet.create({
   },
   dropdownItemText: {
     color: '#FFFFFF',
-    fontSize: 16,
+    fontSize: 13,
   },
   dropdownItemTextSelected: {
     color: '#4CAF50',
@@ -316,7 +281,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    padding: 15,
+    padding: 10,
     borderRadius: 10,
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.1)',
@@ -355,13 +320,16 @@ const styles = StyleSheet.create({
   },
   controlButton: {
     flex: 1,
-    paddingVertical: 15,
+    paddingVertical: 12,
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },
   primaryButton: {
     backgroundColor: '#4CAF50',
+  },
+  stopButton: {
+    backgroundColor: '#FF4444',
   },
   secondaryButton: {
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
@@ -373,17 +341,22 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   primaryButtonText: {
-    fontSize: 16,
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+  },
+  stopButtonText: {
+    fontSize: 14,
     fontWeight: 'bold',
     color: '#FFFFFF',
   },
   secondaryButtonText: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '600',
     color: '#FFFFFF',
   },
   countInContainer: {
-    marginTop: 15,
+    marginTop: 3,
     alignItems: 'center',
   },
   countInText: {

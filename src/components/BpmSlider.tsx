@@ -15,7 +15,7 @@ interface BpmSliderProps {
   max: number;
 }
 
-const SLIDER_WIDTH = 280;
+const SLIDER_WIDTH = 220;
 const SLIDER_HEIGHT = 40;
 const THUMB_SIZE = 24;
 
@@ -134,7 +134,7 @@ export function BpmSlider({ value, onValueChange, min, max }: BpmSliderProps) {
         {/* Slider */}
         <View
           ref={sliderRef}
-          style={styles.sliderContainer}
+          style={[styles.sliderContainer, { pointerEvents: 'auto' }]}
           onLayout={(event) => {
             setSliderWidth(event.nativeEvent.layout.width);
             // Measure the slider's position on screen
@@ -159,6 +159,7 @@ export function BpmSlider({ value, onValueChange, min, max }: BpmSliderProps) {
               styles.thumb,
               {
                 transform: [{ translateX }],
+                pointerEvents: 'auto',
               },
             ]}
             {...panResponder.panHandlers}
@@ -214,26 +215,32 @@ export function BpmSlider({ value, onValueChange, min, max }: BpmSliderProps) {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
+    width: '100%',
   },
   sliderRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    justifyContent: 'center',
+    gap: 6,
   },
   button: {
-    width: 40,
-    height: 40,
+    width: 35,
+    height: 35,
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: 20,
+    borderRadius: 17.5,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.2)',
+    overflow: 'hidden',
   },
   buttonText: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#FFFFFF',
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    lineHeight: 18,
   },
   buttonTextDisabled: {
     color: 'rgba(255, 255, 255, 0.3)',
@@ -286,7 +293,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: SLIDER_WIDTH,
-    marginTop: 8,
+    marginTop: 4,
   },
   label: {
     fontSize: 12,

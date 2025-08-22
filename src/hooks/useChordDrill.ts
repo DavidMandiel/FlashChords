@@ -1,13 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Chord, ChordQuality, ChordPoolSettings } from '../types';
+import { Chord, ChordQuality, ChordPoolSettings, ChordProgressionMode } from '../types';
 import { generateRandomChord } from '../utils/chordUtils';
 import { storageUtils } from '../utils/storage';
 
 export function useChordDrill() {
   const [currentChord, setCurrentChord] = useState<Chord | null>(null);
+  const [nextChord, setNextChord] = useState<Chord | null>(null);
   const [chordPool, setChordPool] = useState<ChordPoolSettings>({
     enabledQualities: ['major', 'minor'],
-    useFlats: false,
+    progressionMode: 'random',
   });
   const [lastChord, setLastChord] = useState<Chord | null>(null);
 
@@ -36,57 +37,125 @@ export function useChordDrill() {
     saveSettings();
   }, [chordPool]);
 
+  // Generate initial next chord when chord pool changes
+  useEffect(() => {
+    if (chordPool.enabledQualities.length > 0 && !nextChord) {
+      try {
+        const previewChord = generateRandomChord(
+          chordPool.enabledQualities,
+          chordPool.progressionMode,
+          null
+        );
+        setNextChord(previewChord);
+      } catch (error) {
+        console.error('Failed to generate initial next chord:', error);
+      }
+    }
+  }, [chordPool, nextChord]);
+
   const generateNextChord = useCallback(() => {
     if (chordPool.enabledQualities.length === 0) {
       return null;
     }
 
     try {
-      const newChord = generateRandomChord(
-        chordPool.enabledQualities,
-        chordPool.useFlats,
-        lastChord
-      );
-      
-      setLastChord(currentChord);
-      setCurrentChord(newChord);
-      return newChord;
+      // If we have a next chord preview, use it as the current chord
+      if (nextChord) {
+        setLastChord(currentChord);
+        setCurrentChord(nextChord);
+        
+        // Generate a new preview chord
+        const newPreviewChord = generateRandomChord(
+          chordPool.enabledQualities,
+          chordPool.progressionMode,
+          nextChord
+        );
+        setNextChord(newPreviewChord);
+        
+        return nextChord;
+      } else {
+        // First chord generation
+        const newChord = generateRandomChord(
+          chordPool.enabledQualities,
+          chordPool.progressionMode,
+          lastChord
+        );
+        
+        setLastChord(currentChord);
+        setCurrentChord(newChord);
+        
+        // Generate the next chord to show in the preview
+        const previewChord = generateRandomChord(
+          chordPool.enabledQualities,
+          chordPool.progressionMode,
+          newChord
+        );
+        setNextChord(previewChord);
+        
+        return newChord;
+      }
     } catch (error) {
       console.error('Failed to generate chord:', error);
       return null;
     }
-  }, [chordPool.enabledQualities, chordPool.useFlats, currentChord, lastChord]);
+  }, [chordPool.enabledQualities, chordPool.progressionMode, currentChord, lastChord, nextChord]);
 
   const toggleChordQuality = useCallback((quality: ChordQuality) => {
-    setChordPool(prev => ({
-      ...prev,
-      enabledQualities: prev.enabledQualities.includes(quality)
-        ? prev.enabledQualities.filter(q => q !== quality)
-        : [...prev.enabledQualities, quality],
-    }));
+    setChordPool(prev => {
+      const isCurrentlyEnabled = prev.enabledQualities.includes(quality);
+      
+      // If we're trying to disable the quality, just remove it
+      if (isCurrentlyEnabled) {
+        return {
+          ...prev,
+          enabledQualities: prev.enabledQualities.filter(q => q !== quality),
+        };
+      }
+      
+      // If we're trying to enable the quality
+      if (quality === 'major' || quality === 'minor') {
+        // For major/minor, remove the other one and add this one
+        const otherQuality = quality === 'major' ? 'minor' : 'major';
+        return {
+          ...prev,
+          enabledQualities: [
+            ...prev.enabledQualities.filter(q => q !== otherQuality),
+            quality
+          ],
+        };
+      } else {
+        // For other qualities (7th, 5th, diminished), just add them
+        return {
+          ...prev,
+          enabledQualities: [...prev.enabledQualities, quality],
+        };
+      }
+    });
   }, []);
 
-  const setUseFlats = useCallback((useFlats: boolean) => {
+  const setProgressionMode = useCallback((mode: ChordProgressionMode) => {
     setChordPool(prev => ({
       ...prev,
-      useFlats,
+      progressionMode: mode,
     }));
   }, []);
 
   const resetChord = useCallback(() => {
     setCurrentChord(null);
     setLastChord(null);
+    setNextChord(null);
   }, []);
 
   const isChordPoolValid = chordPool.enabledQualities.length > 0;
 
   return {
     currentChord,
+    nextChord,
     chordPool,
     isChordPoolValid,
     generateNextChord,
     toggleChordQuality,
-    setUseFlats,
+    setProgressionMode,
     resetChord,
   };
 }
