@@ -10,6 +10,8 @@
   background: rgba(255, 255, 255, 0.05);
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  min-height: 180px;
+  box-sizing: border-box;
 }
 
 .current-chord-container {
@@ -17,6 +19,8 @@
   justify-content: center;
   align-items: center;
   margin-bottom: 15px;
+  min-height: 80px;
+  width: 100%;
 }
 
 .current-chord {
@@ -30,6 +34,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  line-height: 1;
+  margin: 0;
+  padding: 0;
 }
 
 .current-chord.pulsing {
@@ -66,12 +73,14 @@
   flex-direction: column;
   align-items: center;
   opacity: 0.8;
+  width: 100%;
 }
 
 .next-chord-label {
   font-size: 0.9rem;
   color: #888;
   margin-bottom: 8px;
+  margin-top: 0;
 }
 
 .next-chord {
@@ -79,16 +88,24 @@
   color: #999;
   font-weight: 600;
   padding: 8px 16px;
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.05);
   min-width: 60px;
   text-align: center;
+  line-height: 1;
+  margin: 0;
+  box-sizing: border-box;
 }
 
 @media (max-width: 768px) {
   .chord-display {
     padding: 15px;
+    min-height: 160px;
+  }
+
+  .current-chord-container {
+    min-height: 70px;
   }
 
   .current-chord {
@@ -105,6 +122,11 @@
 @media (max-width: 480px) {
   .chord-display {
     padding: 12px;
+    min-height: 140px;
+  }
+
+  .current-chord-container {
+    min-height: 60px;
   }
 
   .current-chord {
