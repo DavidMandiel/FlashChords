@@ -104,27 +104,14 @@ export function useChordDrill() {
     setChordPool(prev => {
       const isCurrentlyEnabled = prev.enabledQualities.includes(quality);
       
-      // If we're trying to disable the quality, just remove it
       if (isCurrentlyEnabled) {
+        // Remove the quality if it's currently enabled
         return {
           ...prev,
           enabledQualities: prev.enabledQualities.filter(q => q !== quality),
         };
-      }
-      
-      // If we're trying to enable the quality
-      if (quality === 'major' || quality === 'minor') {
-        // For major/minor, remove the other one and add this one
-        const otherQuality = quality === 'major' ? 'minor' : 'major';
-        return {
-          ...prev,
-          enabledQualities: [
-            ...prev.enabledQualities.filter(q => q !== otherQuality),
-            quality
-          ],
-        };
       } else {
-        // For other qualities (7th, 5th, diminished), just add them
+        // Add the quality if it's not currently enabled
         return {
           ...prev,
           enabledQualities: [...prev.enabledQualities, quality],
