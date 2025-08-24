@@ -1,6 +1,7 @@
 {
   "name": "flashchord-web",
   "version": "1.0.0",
+  "homepage": "https://davidmandiel.github.io/FlashChords",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.4",
@@ -22,7 +23,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint src --ext .ts,.tsx"
+    "lint": "eslint src --ext .ts,.tsx",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
@@ -59,5 +62,8 @@
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/DavidMandiel/FlashChords/issues"
+  },
+  "devDependencies": {
+    "gh-pages": "^6.3.0"
   }
 }
