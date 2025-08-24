@@ -44,7 +44,7 @@ export function useChordDrill() {
         const previewChord = generateRandomChord(
           chordPool.enabledQualities,
           chordPool.progressionMode,
-          null
+          undefined
         );
         setNextChord(previewChord);
       } catch (error) {
@@ -78,7 +78,7 @@ export function useChordDrill() {
         const newChord = generateRandomChord(
           chordPool.enabledQualities,
           chordPool.progressionMode,
-          lastChord
+          lastChord || undefined
         );
         
         setLastChord(currentChord);

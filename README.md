@@ -1,6 +1,6 @@
-# FlashChord - Guitar Chord Drilling App
+# FlashChord - Guitar Chord Drilling Web App
 
-A React Native (Expo) app that helps guitarists practice chord recognition with a built-in metronome. The app displays random chords at specified intervals while providing audible and visual feedback.
+A React web application that helps guitarists practice chord recognition with a built-in metronome. The app displays random chords at specified intervals while providing audible and visual feedback.
 
 ## Features
 
@@ -16,7 +16,7 @@ A React Native (Expo) app that helps guitarists practice chord recognition with 
 - **BPM Control**: Adjustable tempo from 40-240 BPM with smooth slider
 - **Next Chord Every**: Configure how often chords change (1, 2, 3, 4, 6, or 8 beats)
 - **Visual Feedback**: Animated pulse on each beat with stronger accent on downbeats
-- **Haptic Feedback**: Vibration feedback on Android devices
+- **Web Audio API**: High-quality audio using modern browser APIs
 - **Drift Correction**: Precise timing with automatic drift correction
 
 ### Practice Controls
@@ -29,15 +29,13 @@ A React Native (Expo) app that helps guitarists practice chord recognition with 
 - **Dark Theme**: Clean, modern dark interface
 - **Large Chord Display**: Easy-to-read chord names
 - **Responsive Design**: Works on various screen sizes
-- **State Persistence**: Settings saved between app sessions
+- **State Persistence**: Settings saved between app sessions using localStorage
 
-## How to Run on Android
+## How to Run
 
 ### Prerequisites
 - Node.js (v16 or higher)
 - npm or yarn
-- Expo CLI (`npm install -g @expo/cli`)
-- Android device or emulator with Expo Go app installed
 
 ### Installation & Setup
 
@@ -48,23 +46,20 @@ A React Native (Expo) app that helps guitarists practice chord recognition with 
 
 2. **Start the development server:**
    ```bash
-   npx expo start
+   npm start
    ```
 
-3. **Run on Android:**
-   - Scan the QR code with Expo Go app on your Android device, OR
-   - Press 'a' in the terminal to open on Android emulator
+3. **Open in browser:**
+   - The app will automatically open at `http://localhost:3000`
+   - Or manually navigate to the URL shown in the terminal
 
 ### Development Commands
 ```bash
 # Start development server
 npm start
 
-# Run on Android
-npm run android
-
-# Run on iOS
-npm run ios
+# Build for production
+npm run build
 
 # Run tests
 npm test
@@ -76,42 +71,43 @@ npm run lint
 ## Project Structure
 
 ```
-FlashChord/
-├── app/                    # Expo Router pages
-│   ├── _layout.tsx        # Root layout
-│   └── index.tsx          # Main app screen
+FlashChord-Web/
+├── public/                 # Static files
+│   ├── index.html         # HTML template
+│   └── manifest.json      # Web app manifest
 ├── src/
 │   ├── components/        # React components
 │   │   ├── BpmSlider.tsx
 │   │   ├── ChordDisplay.tsx
 │   │   ├── ChordQualitySelector.tsx
-│   │   └── MetronomeControls.tsx
+│   │   ├── MetronomeControls.tsx
+│   │   └── *.css          # Component styles
 │   ├── hooks/            # Custom React hooks
 │   │   ├── useChordDrill.ts
 │   │   └── useMetronome.ts
 │   ├── types/            # TypeScript type definitions
 │   │   └── index.ts
-│   └── utils/            # Utility functions
-│       ├── chordUtils.ts
-│       ├── soundUtils.ts
-│       └── storage.ts
-├── __tests__/            # Unit tests
+│   ├── utils/            # Utility functions
+│   │   ├── chordUtils.ts
+│   │   ├── soundUtils.ts
+│   │   └── storage.ts
+│   ├── App.tsx           # Main app component
+│   ├── App.css           # App styles
+│   └── index.tsx         # App entry point
 ├── package.json          # Dependencies and scripts
-├── app.json             # Expo configuration
-├── tsconfig.json        # TypeScript configuration
-└── babel.config.js      # Babel configuration
+└── tsconfig.json        # TypeScript configuration
 ```
 
 ## Technical Implementation
 
 ### State Management
 - **Local State**: All state managed with React hooks
-- **Persistence**: Settings saved using expo-mmkv for fast local storage
+- **Persistence**: Settings saved using localStorage for fast local storage
 - **Real-time Updates**: Metronome timing handled with precise interval management
 
 ### Audio System
-- **expo-av**: Handles metronome click sounds
-- **Haptics**: Provides tactile feedback on Android
+- **Web Audio API**: Handles metronome click sounds with high-quality audio
+- **Cross-browser Support**: Works on all modern browsers
 - **Drift Correction**: Maintains accurate timing over long periods
 
 ### Chord Generation
@@ -119,17 +115,20 @@ FlashChord/
 - **No Repeats**: Avoids showing the same chord twice in a row
 - **Quality Filtering**: Only generates chords from selected qualities
 
+## Browser Compatibility
+
+- **Chrome**: Full support
+- **Firefox**: Full support
+- **Safari**: Full support
+- **Edge**: Full support
+- **Mobile Browsers**: Responsive design works on mobile devices
+
 ## Known Limitations
 
 ### Audio
-- **Sound Quality**: Uses simple beep sounds due to placeholder implementation
+- **Browser Autoplay**: Some browsers require user interaction before playing audio
 - **Audio Latency**: May have slight delay on some devices
-- **Background Audio**: App may pause when backgrounded on some devices
-
-### Platform Specific
-- **iOS**: Limited testing on iOS devices
-- **Web**: Not optimized for web browsers
-- **Android**: Best performance on Android devices
+- **Background Audio**: App may pause when browser tab is not active
 
 ### Features
 - **Chord Diagrams**: No visual chord diagrams or fingerings
@@ -138,7 +137,7 @@ FlashChord/
 - **Export/Import**: No settings backup or sharing
 
 ### Performance
-- **Battery Usage**: Continuous metronome may drain battery faster
+- **Battery Usage**: Continuous metronome may drain battery faster on mobile
 - **Memory**: Long sessions may use more memory due to audio caching
 - **Jitter**: Timing may have slight variations on lower-end devices
 
@@ -152,6 +151,8 @@ FlashChord/
 - [ ] Better audio samples and customization
 - [ ] Practice modes (chord progressions, specific keys)
 - [ ] Accessibility improvements
+- [ ] PWA (Progressive Web App) features
+- [ ] Offline support
 
 ## Contributing
 

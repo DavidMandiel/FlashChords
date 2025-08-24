@@ -1,0 +1,181 @@
+.metronome-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 400px;
+  padding: 10px;
+}
+
+.control-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.control-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #fff;
+  text-align: center;
+}
+
+.time-signature-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.time-signature-btn {
+  padding: 6px 12px;
+  border: 2px solid #4CAF50;
+  background: transparent;
+  color: #4CAF50;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.85rem;
+}
+
+.time-signature-btn:hover {
+  background: rgba(76, 175, 80, 0.1);
+}
+
+.time-signature-btn.active {
+  background: #4CAF50;
+  color: #000;
+}
+
+.beats-dropdown {
+  padding: 8px 12px;
+  border: 2px solid #2196F3;
+  background: transparent;
+  color: #2196F3;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  outline: none;
+}
+
+.beats-dropdown:hover {
+  background: rgba(33, 150, 243, 0.1);
+}
+
+.beats-dropdown:focus {
+  border-color: #66BB6A;
+  box-shadow: 0 0 0 2px rgba(102, 187, 106, 0.2);
+}
+
+.beats-dropdown option {
+  background: #2d2d2d;
+  color: #fff;
+  padding: 8px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  justify-content: center;
+}
+
+.checkbox-input {
+  width: 16px;
+  height: 16px;
+  accent-color: #4CAF50;
+}
+
+.checkbox-text {
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+.count-in-display {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.count-in-number {
+  font-size: 6rem;
+  font-weight: bold;
+  color: #4CAF50;
+  text-shadow: 0 0 30px rgba(76, 175, 80, 0.8);
+  animation: pulse 0.5s ease-in-out;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+@media (max-width: 768px) {
+  .metronome-controls {
+    padding: 8px;
+    gap: 10px;
+  }
+
+  .control-section {
+    gap: 6px;
+  }
+
+  .time-signature-buttons {
+    gap: 6px;
+  }
+
+  .time-signature-btn {
+    padding: 5px 10px;
+    font-size: 0.8rem;
+  }
+
+  .beats-dropdown {
+    padding: 6px 10px;
+    font-size: 0.85rem;
+  }
+
+  .count-in-number {
+    font-size: 5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .metronome-controls {
+    padding: 6px;
+    gap: 8px;
+  }
+
+  .control-label {
+    font-size: 0.8rem;
+  }
+
+  .time-signature-btn {
+    padding: 4px 8px;
+    font-size: 0.75rem;
+  }
+
+  .beats-dropdown {
+    padding: 5px 8px;
+    font-size: 0.8rem;
+  }
+
+  .checkbox-text {
+    font-size: 0.8rem;
+  }
+
+  .count-in-number {
+    font-size: 4rem;
+  }
+}

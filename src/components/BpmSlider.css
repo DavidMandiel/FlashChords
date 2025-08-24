@@ -1,0 +1,125 @@
+.bpm-slider-container {
+  width: 100%;
+  padding: 0 10px;
+}
+
+.bpm-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.bpm-btn {
+  width: 32px;
+  height: 32px;
+  border: 2px solid #4CAF50;
+  background: transparent;
+  color: #4CAF50;
+  border-radius: 50%;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.bpm-btn:hover:not(:disabled) {
+  background: rgba(76, 175, 80, 0.1);
+  transform: scale(1.1);
+}
+
+.bpm-btn:disabled {
+  border-color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.2);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.bpm-slider-wrapper {
+  flex: 1;
+  padding: 0 5px;
+}
+
+.bpm-slider {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+.bpm-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #4CAF50;
+  cursor: pointer;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+}
+
+.bpm-slider::-webkit-slider-thumb:hover {
+  background: #66BB6A;
+  transform: scale(1.1);
+}
+
+.bpm-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #4CAF50;
+  cursor: pointer;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+}
+
+.bpm-slider::-moz-range-thumb:hover {
+  background: #66BB6A;
+  transform: scale(1.1);
+}
+
+.bpm-slider::-webkit-slider-track {
+  background: linear-gradient(to right, #4CAF50 0%, #4CAF50 var(--slider-progress), rgba(255, 255, 255, 0.1) var(--slider-progress), rgba(255, 255, 255, 0.1) 100%);
+  border-radius: 4px;
+}
+
+.bpm-slider::-moz-range-track {
+  background: linear-gradient(to right, #4CAF50 0%, #4CAF50 var(--slider-progress), rgba(255, 255, 255, 0.1) var(--slider-progress), rgba(255, 255, 255, 0.1) 100%);
+  border-radius: 4px;
+  height: 8px;
+}
+
+@media (max-width: 768px) {
+  .bpm-controls {
+    gap: 8px;
+  }
+
+  .bpm-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .bpm-controls {
+    gap: 6px;
+  }
+
+  .bpm-btn {
+    width: 24px;
+    height: 24px;
+    font-size: 14px;
+  }
+}

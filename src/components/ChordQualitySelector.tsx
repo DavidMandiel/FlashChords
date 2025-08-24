@@ -1,12 +1,6 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-} from 'react-native';
 import { ChordQuality, ChordProgressionMode } from '../types';
+import './ChordQualitySelector.css';
 
 interface ChordQualitySelectorProps {
   enabledQualities: ChordQuality[];
@@ -15,204 +9,62 @@ interface ChordQualitySelectorProps {
   onSetProgressionMode: (mode: ChordProgressionMode) => void;
 }
 
-const CHORD_QUALITIES: { quality: ChordQuality; label: string; symbol: string }[] = [
-  { quality: 'major', label: 'Major', symbol: '' },
-  { quality: 'minor', label: 'Minor', symbol: 'm' },
-  { quality: '7th', label: '7th', symbol: '7' },
-  { quality: '5th', label: '5th', symbol: '5' },
-  { quality: 'diminished', label: 'Diminished', symbol: 'dim' },
-];
-
 export function ChordQualitySelector({
   enabledQualities,
   onToggleQuality,
   progressionMode,
   onSetProgressionMode,
 }: ChordQualitySelectorProps) {
+  const qualities: { value: ChordQuality; label: string; color: string }[] = [
+    { value: 'major', label: 'Major', color: '#4CAF50' },
+    { value: 'minor', label: 'Minor', color: '#2196F3' },
+    { value: '7th', label: '7th', color: '#FF9800' },
+    { value: '5th', label: '5th', color: '#9C27B0' },
+    { value: 'diminished', label: 'Dim', color: '#F44336' },
+  ];
+
+  const progressionModes: { value: ChordProgressionMode; label: string }[] = [
+    { value: 'random', label: 'Random' },
+    { value: 'circle_of_fifths', label: 'Circle of 5ths' },
+    { value: 'circle_of_fourths', label: 'Circle of 4ths' },
+  ];
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Chord Qualities</Text>
-      
-      <View style={styles.qualitiesContainer}>
-        {CHORD_QUALITIES.map(({ quality, label, symbol }) => {
-          const isEnabled = enabledQualities.includes(quality);
-          return (
-            <TouchableOpacity
-              key={quality}
-              style={[
-                styles.qualityButton,
-                isEnabled && styles.qualityButtonActive,
-              ]}
-              onPress={() => onToggleQuality(quality)}
+    <div className="chord-quality-selector">
+      {/* Chord Qualities */}
+      <div className="section">
+        <div className="section-title">Chord Qualities</div>
+        <div className="quality-buttons">
+          {qualities.map((quality) => (
+            <button
+              key={quality.value}
+              className={`quality-btn ${enabledQualities.includes(quality.value) ? 'active' : ''}`}
+              style={{
+                '--quality-color': quality.color,
+              } as React.CSSProperties}
+              onClick={() => onToggleQuality(quality.value)}
             >
-              <Text style={[
-                styles.qualityLabel,
-                isEnabled && styles.qualityLabelActive,
-              ]}>
-                {label}
-              </Text>
-              <Text style={[
-                styles.qualitySymbol,
-                isEnabled && styles.qualitySymbolActive,
-              ]}>
-                {symbol}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
-      </View>
+              {quality.label}
+            </button>
+          ))}
+        </div>
+      </div>
 
-      <View style={styles.flatsToggleContainer}>
-        <Text style={styles.flatsLabel}>Chord Progression:</Text>
-        <View style={styles.toggleGroup}>
-          <TouchableOpacity
-            style={[
-              styles.toggleButton,
-              progressionMode === 'random' && styles.toggleButtonActive,
-            ]}
-            onPress={() => onSetProgressionMode('random')}
-          >
-            <Text style={[
-              styles.toggleText,
-              progressionMode === 'random' && styles.toggleTextActive,
-            ]}>
-              Random
-            </Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity
-            style={[
-              styles.toggleButton,
-              progressionMode === 'circle_of_fifths' && styles.toggleButtonActive,
-            ]}
-            onPress={() => onSetProgressionMode('circle_of_fifths')}
-          >
-            <Text style={[
-              styles.toggleText,
-              progressionMode === 'circle_of_fifths' && styles.toggleTextActive,
-            ]}>
-              Circle 5th
-            </Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity
-            style={[
-              styles.toggleButton,
-              progressionMode === 'circle_of_fourths' && styles.toggleButtonActive,
-            ]}
-            onPress={() => onSetProgressionMode('circle_of_fourths')}
-          >
-            <Text style={[
-              styles.toggleText,
-              progressionMode === 'circle_of_fourths' && styles.toggleTextActive,
-            ]}>
-              Circle 4th
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      {enabledQualities.length === 0 && (
-        <Text style={styles.warningText}>
-          Select at least one chord quality to start practicing
-        </Text>
-      )}
-    </View>
+      {/* Progression Mode */}
+      <div className="section">
+        <div className="section-title">Progression Mode</div>
+        <div className="progression-buttons">
+          {progressionModes.map((mode) => (
+            <button
+              key={mode.value}
+              className={`progression-btn ${progressionMode === mode.value ? 'active' : ''}`}
+              onClick={() => onSetProgressionMode(mode.value)}
+            >
+              {mode.label}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 6,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-    borderRadius: 12,
-    margin: 1,
-    marginTop: 0,
-    width: '90%',
-    maxWidth: 350,
-  },
-  title: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    textAlign: 'center',
-    marginBottom: 5,
-  },
-  qualitiesContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    gap: 4,
-    marginBottom: 5,
-  },
-  qualityButton: {
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
-    borderRadius: 6,
-    paddingHorizontal: 5,
-    paddingVertical: 3,
-    minWidth: 45,
-    alignItems: 'center',
-  },
-  qualityButtonActive: {
-    backgroundColor: '#4CAF50',
-    borderColor: '#4CAF50',
-  },
-  qualityLabel: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: 'rgba(255, 255, 255, 0.8)',
-  },
-  qualityLabelActive: {
-    color: '#FFFFFF',
-  },
-  qualitySymbol: {
-    fontSize: 10,
-    color: 'rgba(255, 255, 255, 0.6)',
-    marginTop: 1,
-  },
-  qualitySymbolActive: {
-    color: 'rgba(255, 255, 255, 0.9)',
-  },
-  flatsToggleContainer: {
-    alignItems: 'center',
-  },
-  flatsLabel: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#FFFFFF',
-    marginBottom: 10,
-  },
-  toggleGroup: {
-    flexDirection: 'row',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: 8,
-    padding: 2,
-  },
-  toggleButton: {
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 6,
-    minWidth: 80,
-    alignItems: 'center',
-  },
-  toggleButtonActive: {
-    backgroundColor: '#4CAF50',
-  },
-  toggleText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: 'rgba(255, 255, 255, 0.8)',
-  },
-  toggleTextActive: {
-    color: '#FFFFFF',
-  },
-  warningText: {
-    fontSize: 14,
-    color: '#FF6B6B',
-    textAlign: 'center',
-    marginTop: 15,
-    fontStyle: 'italic',
-  },
-});

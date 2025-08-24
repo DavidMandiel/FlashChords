@@ -1,7 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Platform } from 'react-native';
-import { Haptics } from 'expo-haptics';
-import { MetronomeState, TimeSignature } from '../types';
+import { TimeSignature } from '../types';
 import { soundManager } from '../utils/soundUtils';
 import { getTimeSignatureBeats } from '../utils/chordUtils';
 
@@ -38,13 +36,7 @@ export function useMetronome({
   const playTick = useCallback(async (isAccent: boolean) => {
     try {
       await soundManager.playTick(isAccent);
-      if (Platform.OS !== 'web') {
-        if (isAccent) {
-          await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-        } else {
-          await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-        }
-      }
+      // Note: Haptic feedback removed for web version
     } catch (error) {
       console.error('Failed to play tick:', error);
     }
@@ -53,38 +45,40 @@ export function useMetronome({
   const tick = useCallback(() => {
     const now = Date.now();
     
-         if (isInCountIn) {
-       // Count-in phase - all beats sound the same
-       playTick(false); // All count-in beats sound the same (no accent)
-       
-       const newCountInBeat = countInBeat + 1;
-       setCountInBeat(newCountInBeat);
-       
-       if (newCountInBeat > 4) {
-         // End count-in and start regular metronome
-         setIsInCountIn(false);
-         setCountInBeat(0);
-         setBeatCount(1);
-         setIsPlaying(true);
-         // Play the first beat of regular metronome immediately (accented)
-         playTick(true);
-         onBeat?.(1, true);
-         return; // Exit early to avoid double-playing
-       }
-         } else {
-               // Regular metronome phase - accent on beat 1
-        const isAccent = beatCount === 1;
-        playTick(isAccent);
-        onBeat?.(beatCount, isAccent);
-       
-                       // Check if it's time to change chord (if we're on the last beat of the cycle)
-        if (beatCount === beatsPerBar && (beatCount % nextChordEveryBeats === 0)) {
-          onChordChange?.();
-        }
-        
-        // Advance to next beat
-        const newBeatCount = beatCount === beatsPerBar ? 1 : beatCount + 1;
-        setBeatCount(newBeatCount);
+    if (isInCountIn) {
+      // Count-in phase - all beats sound the same
+      playTick(false); // All count-in beats sound the same (no accent)
+      
+      const newCountInBeat = countInBeat + 1;
+      setCountInBeat(newCountInBeat);
+      
+      if (newCountInBeat > 4) {
+        // End count-in and start regular metronome
+        setIsInCountIn(false);
+        setCountInBeat(0);
+        setBeatCount(1);
+        setIsPlaying(true);
+        // Play the first beat of regular metronome immediately (accented)
+        playTick(true);
+        onBeat?.(1, true);
+        // Trigger chord change on first beat after count-in
+        onChordChange?.();
+        return; // Exit early to avoid double-playing
+      }
+    } else {
+      // Regular metronome phase - accent on beat 1
+      const isAccent = beatCount === 1;
+      playTick(isAccent);
+      onBeat?.(beatCount, isAccent);
+     
+      // Check if it's time to change chord - trigger on the first beat of each chord cycle
+      if (beatCount % nextChordEveryBeats === 1) {
+        onChordChange?.();
+      }
+      
+      // Advance to next beat
+      const nextBeat = beatCount === beatsPerBar ? 1 : beatCount + 1;
+      setBeatCount(nextBeat);
     }
     
     lastTickTimeRef.current = now;
@@ -101,28 +95,30 @@ export function useMetronome({
     onChordChange,
   ]);
 
-     const startMetronome = useCallback(() => {
-           if (countInEnabled) {
-        setIsInCountIn(true);
-        setCountInBeat(1); // Start from 1 so we get beats 1, 2, 3, 4
-        setBeatCount(1);
-      } else {
-        setIsPlaying(true);
-        setBeatCount(1);
-      }
-    
+  const startMetronome = useCallback(() => {
+    if (countInEnabled) {
+      setIsInCountIn(true);
+      setCountInBeat(1); // Start from 1 so we get beats 1, 2, 3, 4
+      setBeatCount(1);
+    } else {
+      setIsPlaying(true);
+      setBeatCount(1);
+    }
+  
     const now = Date.now();
     expectedTimeRef.current = now + msPerBeat;
     lastTickTimeRef.current = now;
     
-         // Play first tick immediately
-     if (countInEnabled) {
-       playTick(false); // First count-in beat (non-accented)
-     } else {
-       playTick(true); // First beat of regular metronome should be accented
-       onBeat?.(1, true);
-     }
-  }, [countInEnabled, msPerBeat, playTick, onBeat]);
+    // Play first tick immediately
+    if (countInEnabled) {
+      playTick(false); // First count-in beat (non-accented)
+    } else {
+      playTick(true); // First beat of regular metronome should be accented
+      onBeat?.(1, true);
+      // Trigger chord change on first beat when starting without count-in
+      onChordChange?.();
+    }
+  }, [countInEnabled, msPerBeat, playTick, onBeat, onChordChange]);
 
   const stopMetronome = useCallback(() => {
     setIsPlaying(false);

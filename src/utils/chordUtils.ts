@@ -1,8 +1,5 @@
 import { Chord, ChordQuality, ChordRoot, FlatRoot, ChordProgressionMode } from '../types';
 
-const SHARP_ROOTS: ChordRoot[] = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'Bb', 'Eb', 'Ab', 'Db', 'Gb'];
-const FLAT_ROOTS: FlatRoot[] = ['A', 'Bb', 'B', 'C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab'];
-
 // Circle of Fifths progression (ascending fifths)
 const CIRCLE_OF_FIFTHS: ChordRoot[] = ['C', 'G', 'D', 'A', 'E', 'B', 'F#', 'C#', 'G#', 'D#', 'A#', 'F'];
 
@@ -25,6 +22,11 @@ const SHARP_TO_FLAT: Record<ChordRoot, FlatRoot> = {
   'F#': 'Gb',
   'G': 'G',
   'G#': 'Ab',
+  'Bb': 'Bb',
+  'Eb': 'Eb',
+  'Ab': 'Ab',
+  'Db': 'Db',
+  'Gb': 'Gb',
 };
 
 const FLAT_TO_SHARP: Record<FlatRoot, ChordRoot> = {
@@ -63,8 +65,6 @@ export function getChordDisplay(root: ChordRoot, quality: ChordQuality): string 
   return `${root}${suffix}`;
 }
 
-
-
 export function generateRandomChord(
   enabledQualities: ChordQuality[],
   progressionMode: ChordProgressionMode,
@@ -74,45 +74,28 @@ export function generateRandomChord(
     throw new Error('No chord qualities enabled');
   }
 
-  let newChord: Chord;
-  let attempts = 0;
-  const maxAttempts = 100;
-
-  do {
-    let selectedRoot: ChordRoot;
-    
-    if (progressionMode === 'circle_of_fifths') {
-      // Pick a random root from the circle of fifths
-      selectedRoot = CIRCLE_OF_FIFTHS[Math.floor(Math.random() * CIRCLE_OF_FIFTHS.length)];
-    } else if (progressionMode === 'circle_of_fourths') {
-      // Pick a random root from the circle of fourths
-      selectedRoot = CIRCLE_OF_FOURTHS[Math.floor(Math.random() * CIRCLE_OF_FOURTHS.length)];
-    } else {
-      // 'random' - pick randomly from the progression array
-      selectedRoot = RANDOM_PROGRESSION[Math.floor(Math.random() * RANDOM_PROGRESSION.length)];
-    }
-    
-    const randomQuality = enabledQualities[Math.floor(Math.random() * enabledQualities.length)];
-    const display = getChordDisplay(selectedRoot, randomQuality);
-    
-    newChord = {
-      root: selectedRoot,
-      quality: randomQuality,
-      display,
-    };
-    
-    attempts++;
-  } while (
-    lastChord && 
-    newChord.root === lastChord.root && 
-    newChord.quality === lastChord.quality &&
-    attempts < maxAttempts
-  );
-
-  return newChord;
+  let selectedRoot: ChordRoot;
+  
+  if (progressionMode === 'circle_of_fifths') {
+    // Pick a random root from the circle of fifths
+    selectedRoot = CIRCLE_OF_FIFTHS[Math.floor(Math.random() * CIRCLE_OF_FIFTHS.length)];
+  } else if (progressionMode === 'circle_of_fourths') {
+    // Pick a random root from the circle of fourths
+    selectedRoot = CIRCLE_OF_FOURTHS[Math.floor(Math.random() * CIRCLE_OF_FOURTHS.length)];
+  } else {
+    // 'random' - pick randomly from the progression array
+    selectedRoot = RANDOM_PROGRESSION[Math.floor(Math.random() * RANDOM_PROGRESSION.length)];
+  }
+  
+  const randomQuality = enabledQualities[Math.floor(Math.random() * enabledQualities.length)];
+  const display = getChordDisplay(selectedRoot, randomQuality);
+  
+  return {
+    root: selectedRoot,
+    quality: randomQuality,
+    display,
+  };
 }
-
-
 
 export function getTimeSignatureBeats(timeSignature: string): number {
   const [numerator] = timeSignature.split('/').map(Number);
