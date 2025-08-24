@@ -1,20 +1,23 @@
 .chord-quality-selector {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 20px;
   width: 100%;
-  max-width: 400px;
-  padding: 10px;
+  max-width: 500px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .section {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
 }
 
 .section-title {
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 600;
   color: #fff;
   text-align: center;
@@ -23,20 +26,20 @@
 .quality-buttons {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
   justify-content: center;
 }
 
 .quality-btn {
-  padding: 6px 12px;
+  padding: 8px 16px;
   border: 2px solid var(--quality-color);
   background: transparent;
   color: var(--quality-color);
-  border-radius: 6px;
+  border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
 }
 
 .quality-btn:hover {
@@ -50,17 +53,17 @@
 
 .progression-buttons {
   display: flex;
-  gap: 6px;
+  gap: 8px;
   justify-content: center;
 }
 
 .progression-btn {
-  padding: 4px 10px;
+  padding: 6px 12px;
   border: 2px solid #666;
   background: transparent;
   color: #666;
-  border-radius: 4px;
-  font-size: 0.75rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -78,50 +81,50 @@
 
 @media (max-width: 768px) {
   .chord-quality-selector {
-    padding: 8px;
-    gap: 10px;
+    padding: 15px;
+    gap: 15px;
   }
 
   .section {
-    gap: 6px;
+    gap: 10px;
   }
 
   .quality-buttons {
-    gap: 4px;
+    gap: 6px;
   }
 
   .quality-btn {
-    padding: 5px 10px;
-    font-size: 0.75rem;
+    padding: 6px 12px;
+    font-size: 0.85rem;
   }
 
   .progression-buttons {
-    gap: 4px;
+    gap: 6px;
   }
 
   .progression-btn {
-    padding: 3px 8px;
-    font-size: 0.7rem;
+    padding: 5px 10px;
+    font-size: 0.8rem;
   }
 }
 
 @media (max-width: 480px) {
   .chord-quality-selector {
-    padding: 6px;
-    gap: 8px;
+    padding: 12px;
+    gap: 12px;
   }
 
   .section-title {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
   }
 
   .quality-btn {
-    padding: 4px 8px;
-    font-size: 0.7rem;
+    padding: 5px 10px;
+    font-size: 0.8rem;
   }
 
   .progression-btn {
-    padding: 3px 6px;
-    font-size: 0.65rem;
+    padding: 4px 8px;
+    font-size: 0.75rem;
   }
 }

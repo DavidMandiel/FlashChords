@@ -1,20 +1,23 @@
 .metronome-controls {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 20px;
   width: 100%;
-  max-width: 400px;
-  padding: 10px;
+  max-width: 500px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .control-section {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
 }
 
 .control-label {
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 600;
   color: #fff;
   text-align: center;
@@ -22,20 +25,20 @@
 
 .time-signature-buttons {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   justify-content: center;
 }
 
 .time-signature-btn {
-  padding: 6px 12px;
+  padding: 8px 16px;
   border: 2px solid #4CAF50;
   background: transparent;
   color: #4CAF50;
-  border-radius: 6px;
+  border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
 }
 
 .time-signature-btn:hover {
@@ -48,12 +51,12 @@
 }
 
 .beats-dropdown {
-  padding: 8px 12px;
+  padding: 10px 16px;
   border: 2px solid #2196F3;
   background: transparent;
   color: #2196F3;
-  border-radius: 6px;
-  font-size: 0.9rem;
+  border-radius: 8px;
+  font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -79,20 +82,20 @@
 .checkbox-label {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   cursor: pointer;
   justify-content: center;
 }
 
 .checkbox-input {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   accent-color: #4CAF50;
 }
 
 .checkbox-text {
   color: #fff;
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .count-in-display {
@@ -124,16 +127,41 @@
 
 @media (max-width: 768px) {
   .metronome-controls {
-    padding: 8px;
-    gap: 10px;
+    padding: 15px;
+    gap: 15px;
   }
 
   .control-section {
-    gap: 6px;
+    gap: 10px;
   }
 
   .time-signature-buttons {
-    gap: 6px;
+    gap: 8px;
+  }
+
+  .time-signature-btn {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+  }
+
+  .beats-dropdown {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
+
+  .count-in-number {
+    font-size: 5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .metronome-controls {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .control-label {
+    font-size: 0.9rem;
   }
 
   .time-signature-btn {
@@ -146,33 +174,8 @@
     font-size: 0.85rem;
   }
 
-  .count-in-number {
-    font-size: 5rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .metronome-controls {
-    padding: 6px;
-    gap: 8px;
-  }
-
-  .control-label {
-    font-size: 0.8rem;
-  }
-
-  .time-signature-btn {
-    padding: 4px 8px;
-    font-size: 0.75rem;
-  }
-
-  .beats-dropdown {
-    padding: 5px 8px;
-    font-size: 0.8rem;
-  }
-
   .checkbox-text {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
   }
 
   .count-in-number {
