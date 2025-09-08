@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.css": "/FlashChords---Web/static/css/main.ec04833c.css",
-    "main.js": "/FlashChords---Web/static/js/main.96a6a51f.js",
-    "index.html": "/FlashChords---Web/index.html",
-    "main.ec04833c.css.map": "/FlashChords---Web/static/css/main.ec04833c.css.map",
-    "main.96a6a51f.js.map": "/FlashChords---Web/static/js/main.96a6a51f.js.map"
+    "main.css": "/FlashChords/static/css/main.ec04833c.css",
+    "main.js": "/FlashChords/static/js/main.96a6a51f.js",
+    "index.html": "/FlashChords/index.html",
+    "main.ec04833c.css.map": "/FlashChords/static/css/main.ec04833c.css.map",
+    "main.96a6a51f.js.map": "/FlashChords/static/js/main.96a6a51f.js.map"
   },
   "entrypoints": [
     "static/css/main.ec04833c.css",
