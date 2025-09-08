@@ -76,6 +76,13 @@
   width: 100%;
 }
 
+.next-chord-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
 .next-chord-label {
   font-size: 0.9rem;
   color: #888;

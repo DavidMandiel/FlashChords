@@ -11,7 +11,7 @@ interface BpmSliderProps {
 export function BpmSlider({ 
   value, 
   onChange, 
-  min = 40, 
+  min = 20, 
   max = 240 
 }: BpmSliderProps) {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {

@@ -147,6 +147,13 @@ function App() {
     setProgressionMode(mode);
   }, [setProgressionMode]);
 
+  const handleNextChord = useCallback(() => {
+    // Only allow manual chord changes when metronome is not playing
+    if (!isPlaying) {
+      handleChordChange();
+    }
+  }, [isPlaying, handleChordChange]);
+
   return (
     <div className="app">
       <div className="app-container">
@@ -166,6 +173,8 @@ function App() {
               isPulsing={isPulsing}
               isAccent={isAccent}
               isChordChanging={isChordChanging}
+              onNextChord={handleNextChord}
+              showNextButton={!isPlaying && isChordPoolValid}
             />
           </div>
 
@@ -208,6 +217,7 @@ function App() {
               {isPlaying ? 'Stop' : 'Start'}
             </button>
           </div>
+
 
           {/* Warning */}
           {!isChordPoolValid && (
